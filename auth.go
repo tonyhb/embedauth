@@ -1,4 +1,4 @@
-package auth
+package embedauth
 
 import (
 	"bytes"
