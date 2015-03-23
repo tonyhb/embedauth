@@ -10,6 +10,8 @@ import (
 func init() {
 	// Lower the hash cost for testing
 	HashCost = 1
+	// Our test users can be as insecure as we bloody well want
+	MinPasswordLength = 0
 }
 
 func TestNewActivationKey(t *testing.T) {
@@ -87,7 +89,7 @@ func TestSetPasswordString(t *testing.T) {
 // This is the logic for asserting that a password is set correctly
 func assertPassword(a *Auth, t *testing.T) {
 	if len(a.PasswordHash) != 60 {
-		t.Fatal()
+		t.Fatalf("Password was %d bytes long", len(a.PasswordHash))
 	}
 	if !bytes.Equal(a.PasswordHash[0:7], []byte("$2a$10$")) {
 		t.Fatal()

@@ -10,7 +10,11 @@ import (
 )
 
 var (
+	// This is the cost of bcrypt hashing
 	HashCost = 15
+
+	// Update this within your code to set the minimum password length requirements
+	MinPasswordLength = 8
 
 	ErrActivationKeyExpired = fmt.Errorf("Activation key expired")
 	ErrInvalidActivationKey = fmt.Errorf("Activation key is invalid")
@@ -19,7 +23,7 @@ var (
 type Auth struct {
 	Email        string `validate:"Email"`
 	PasswordHash []byte `validate:"NotEmpty" db:"password_hash"`
-	PasswordSalt []byte `validate:"NotEmpty" db:"password_salt"`
+	PasswordSalt []byte `db:"password_salt"`
 
 	IsActive          bool      `db:"is_active"`
 	ActivationKey     []byte    `db:"activation_key"`
@@ -61,6 +65,10 @@ func (a *Auth) SetPassword(pw []byte) error {
 
 	if len(pw) == 0 {
 		return fmt.Errorf("A password must be provided")
+	}
+
+	if len(pw) < MinPasswordLength {
+		return fmt.Errorf("Passwords must be %d characters long", MinPasswordLength)
 	}
 
 	hash, err := bcrypt.GenerateFromPassword(a.addSaltToPassword(pw), HashCost)
