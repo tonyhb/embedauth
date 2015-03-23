@@ -36,12 +36,12 @@ type Auth struct {
 // Generates a new activation key for the
 func (a *Auth) NewActivationKey() {
 	a.ActivationKey = []byte(uuid.New())
-	a.ActivationExpires = time.Now().AddDate(0, 0, 7)
+	a.ActivationExpires = time.Now().AddDate(0, 0, 7).Round(1 * time.Second).UTC()
 }
 
 func (a *Auth) NewResetKey() {
 	a.ResetKey = []byte(uuid.New())
-	a.ResetExpires = time.Now().AddDate(0, 0, 7)
+	a.ResetExpires = time.Now().AddDate(0, 0, 7).Round(1 * time.Second).UTC()
 }
 
 // Activates a user if the activation expiry has not passed. This also empties
